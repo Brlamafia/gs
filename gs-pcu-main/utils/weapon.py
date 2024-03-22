@@ -1,0 +1,21 @@
+
+weapon_names = ["No tiene", "Brass knuckles", "Golf club",
+	"Nightstick", "Knife" , "Bat" ,
+	"Shovel", "Pool cue" , "Katana",
+	"Chainsaw" , "Purple dildo" , "Dildo" ,
+	"Vibrator" , "Vibrator" , "Flowers" ,
+	"Cane" , "Grenade", "Tear gas" ,
+	"Molotov" , "Vehicle gun" , "Vehicle gun" ,
+	"Vehicle gun" , "Colt 45", "Silenced pistol" ,
+	"Deagle", "Shotgun", "Sawn-off shotgun",
+	"Combat shotgun" , "Mac-10" , "MP5" ,
+	"AK-47" , "M4" , "Tec-9" ,
+	"Cuntgun" , "Sniper" , "Rocket launcher" ,
+	"Heat seeking RPG" , "Flamethrower" , "Minigun" ,
+	"Satchel" , "Detonator" , "Spraycan" ,
+	"Fire extinguisher", "Camera" , "Night vision goggles",
+	"Infrared goggles" , "Parachute" , "Fake pistol" ,
+	"Pistol whip" , "Vehicle", "Helicopter blades" ,
+	"Explosion" , "Car parking" , "Drowning" ,
+	"Collision" , "Splat" , "Unknown"
+]

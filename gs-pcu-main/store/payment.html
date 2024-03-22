@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Confirmar compra", "¡Adquiere autos, casas, monedas, lo que quieras! Ahora con
+    acreditaciones automáticas.") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="p-5">
+            <h1 class="mb-3 text-center">Confirmar el pedido</h1>
+            <p class="col-xs-1 fs-6 text-center">Paga el monto exacto y sube el recibo correspondiente para completar tu pedido, en caso de Rapipago o Pago Fácil debes esperar a que un validador te envíe el código para realizar el depósito. Haga clic en el botón de abajo para confirmar el pedido y proceder a la creación del recibo.</p>
+        
+            <div class="text-center">
+                {% if not shoppy_link %}
+                <div class="alert alert-warning" role="alert"><i class="fa-solid fa-warning"></i> <b>Aviso:</b> ¡Está a punto de confirmar usando un método manual! Por favor, si no va a pagar, no confirme el pago ya que nos lleva tiempo revisar los pedidos. Puede ser sancionado.</div>
+
+                <h4 class="fw-bold mt-5">Datos para depositar:</h4>
+                <div class="code" style="text-align: left;">
+                    <code>
+                        Método: {{ method_info[0] }}
+                        <br>
+                        {{ method_info[1] | safe }}
+                        <br>
+                        Monto: {{ product['price'] }} {{ product['currency'] }}
+                    </code>
+                </div>
+                <br>
+                <a class="mt-5 w-50 btn btn-lg btn-primary" style="margin-top: 50px;" href="{{ url_for('store.start_payment', product_id = product['id'], method_id = method_id) }}">Confirmar el pedido</a>
+                {% else %}
+                <h4 class="fw-bold mt-5">Acreditación automática:</h4>
+                <p class="col-xs-1 fs-6 text-center">Bienvenido al sistema de acreditación automática. Haga click en el botón de color verde para pagar, una vez que lo haga, la compra de "{{ product["name"] }}" se acreditará automáticamente.</p>
+                <a class="mt-5 w-50 btn btn-lg btn-primary" style="margin-top: 50px;" href="{{ shoppy_link }}">Completar compra</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+</body>
+
+</html>

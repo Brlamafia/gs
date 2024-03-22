@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle with context %}
+    {{ generateHeader("Golden State - Error " + code | string, "Hubo un error...") }}
+</head>
+
+<body>
+
+    <div class="d-flex align-items-center justify-content-center" style="height: 350px">
+        <div class="text-center">
+            <h1 style="color: aliceblue;">ERROR {{code}}</h1>
+            <p style="color: rgb(121, 121, 121); font-size: 18px">{{info}}</p>
+        </div>
+    </div>
+
+    {{ javascriptBundle() }}
+</body>
+
+</html>

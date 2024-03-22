@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Mis cajas misteriosas", "*ruido de cofre*") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="p-3">
+            <h1 class="mt-3 mb-3 text-center">Cajas misteriosas 🕵️</i></h1>
+            <p class="col-xs-1 fs-6 text-center">Tienes {{ boxes | length }} cajas misteriosas en tu cuenta.</p>
+
+            {% if error %}
+            <div class="alert alert-danger" role="alert"><i class="fa-solid fa-bug"></i> {{ error }}</div>
+            {% endif %}
+            
+            <style>
+                .magic-particles {
+                    background-image: url(https://img1.picmix.com/output/stamp/normal/9/6/0/0/600069_226ab.gif);
+                    background-repeat: no-repeat;
+                    background-size: contain 35%;
+                    background-position: center;
+                }
+            </style>
+
+            <audio id="hover_audio" src="{{ url_for('static', filename='audio/hover.mp3') }}" preload="auto">
+                Your browser does not support the <code>audio</code> element.
+            </audio>
+
+            <audio id="click_audio" src="{{ url_for('static', filename='audio/click.mp3') }}" preload="auto">
+                Your browser does not support the <code>audio</code> element.
+            </audio>
+
+            <div class="row d-flex justify-content-center mt-3">
+            {% for box in boxes %}
+                <div class="card product-card" id="box_{{box['id']}}" style="width: 18rem;" onclick="open_box(`{{box['id']}}`)">
+
+                    <img src="/static/images/mystery_boxes/{{ box['quality'] }}.png" class="card-img-top" style="user-select: none;">
+                    <p class="text-center product-name {% if box['quality'] == 3 %}magic-particles{% endif %}">
+                        {{ box['name'] }} #{{ box['id'] }}
+                    </p>
+                </div>
+            {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+
+    <script>
+        var hover_audio = document.getElementById('hover_audio');
+        var click_audio = document.getElementById('click_audio');
+
+        hover_audio.play();
+        click_audio.play();
+
+        hover_audio.pause();
+        hover_audio.currentTime = 0;
+
+        click_audio.pause();
+        click_audio.currentTime = 0;
+
+        function open_box(box_id)
+        {
+            click_audio.play();
+
+            setTimeout(function() {
+                window.location = `/inventory/mystery_boxes/open/${box_id}`;
+            }, 1000);
+        }
+
+        // {% for box in boxes %}
+        var element_box_{{box['id']}} = document.getElementById("box_{{box['id']}}");
+        element_box_{{box['id']}}.addEventListener('mouseover', function() {
+            hover_audio.play();
+        }, false);
+            
+        element_box_{{box['id']}}.addEventListener('mouseleave', function() {
+            hover_audio.pause();
+            hover_audio.currentTime = 0;
+        }, false);
+        // {% endfor %}
+    </script>
+</body>
+
+</html>

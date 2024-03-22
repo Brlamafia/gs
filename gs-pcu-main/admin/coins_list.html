@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Monedas", "GS Manage") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="p-3">
+            <div class="text-left back-container">
+                <p class="back-text">
+                    < Volver a <a class="back-link" href="{{ url_for('admin.index') }}">Panel administrativo</a>
+                </p>
+            </div>
+
+            <div class="row d-flex justify-content-center mt-3 mb-3">
+                <div class="card product-card" style="width: 19rem;">
+                    <p class="text-center product-name" style="padding: 18px !important;">
+                        <span style="color: rgb(26, 26, 26); font-size: 15px; font-weight: normal;">💲 Monedas en circulación</span>
+                        <br>
+                        <br>
+                        <span style="color: #000; font-size: 34px; font-weight: bold; margin-top: 10px">G$ {{ total_coins }}</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 19rem;">
+                    <p class="text-center product-name" style="padding: 18px !important;">
+                        <span style="color: rgb(26, 26, 26); font-size: 15px; font-weight: normal;">🔥 Monedas inexistentes</span>
+                        <br>
+                        <br>
+                        <span style="color: #000; font-size: 34px; font-weight: bold; margin-top: 10px">G$ {{ server_coin['burned_coins'] }}</span>
+                    </p>
+                </div>
+                
+                <div class="card product-card" style="width: 19rem;">
+                    <p class="text-center product-name" style="padding: 18px !important;">
+                        <span style="color: rgb(26, 26, 26); font-size: 15px; font-weight: normal;">​🏛️ Reservas</span>
+                        <br>
+                        <br>
+                        <span style="color: #000; font-size: 34px; font-weight: bold; margin-top: 10px">G$ {{ server_coin['reserves'] }}</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 19rem;">
+                    <p class="text-center product-name" style="padding: 18px !important;">
+                        <span style="color: rgb(26, 26, 26); font-size: 15px; font-weight: normal;">💱​ Límite de monedas</span>
+                        <br>
+                        <br>
+                        <span style="color: #000; font-size: 34px; font-weight: bold; margin-top: 10px">G$ {{ server_coin['emission_limit'] }}</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 19rem;">
+                    <p class="text-center product-name" style="padding: 18px !important;">
+                        <span style="color: rgb(26, 26, 26); font-size: 15px; font-weight: normal;">💩​ Pobres (-15 GS)</span>
+                        <br>
+                        <br>
+                        <span style="color: #000; font-size: 34px; font-weight: bold; margin-top: 10px">{{ server_coin['poor'] }}</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 19rem;">
+                    <p class="text-center product-name" style="padding: 18px !important;">
+                        <span style="color: rgb(26, 26, 26); font-size: 15px; font-weight: normal;">💵​ Ricos (+1000 GS)</span>
+                        <br>
+                        <br>
+                        <span style="color: #000; font-size: 34px; font-weight: bold; margin-top: 10px">{{ server_coin['richs'] }}</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 19rem;">
+                    <p class="text-center product-name" style="padding: 18px !important;">
+                        <span style="color: rgb(26, 26, 26); font-size: 15px; font-weight: normal;">💸 Promedio de GS</span>
+                        <br>
+                        <br>
+                        <span style="color: #000; font-size: 34px; font-weight: bold; margin-top: 10px">G$ {{ server_coin['mean'] }} p/u</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 19rem;">
+                    <p class="text-center product-name" style="padding: 18px !important;">
+                        <span style="color: rgb(26, 26, 26); font-size: 15px; font-weight: normal;">🧍​ Jugadores activos con GS ({{ server_coin['total_users_with_coin'] }} / {{ server_coin['total_users'] }})</span>
+                        <br>
+                        <br>
+                        <span style="color: #000; font-size: 34px; font-weight: bold; margin-top: 10px">{{ server_coin['coin_users_pct'] }}%</span>
+                    </p>
+                </div>
+            </div>
+
+            <table class="table table-borderless text-center" id="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Monedas</th>
+                        <th scope="col">Dias sin entrar</th>
+                        <th scope="col">Meses sin entrar</th>
+                        <th scope="col">Última conexión</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for player in players %}
+                    <tr>
+                        <td>{{ player['top_number'] }}</td>
+                        <td>{{ player['nombre'] }}</td>
+                        <td>{{ player['monedas'] }}</td>
+                        <td>{{ player['days_passed'] }}</td>
+                        <td>{{ player['months_passed'] }}</td>
+                        <td>{{ player['ultima_conexion'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable({
+                "language": {
+                    "url": "{{ url_for('static', filename='json/datatables.json') }}"
+                },
+                order: [0, 'asc'],
+            });
+        });
+    </script>
+</body>
+
+</html>

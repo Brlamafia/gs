@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Comprobantes de pago", "Gestiona todos tus comprobantes de pago.") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="p-5">
+            <div class="text-left back-container">
+                <p class="back-text">< Volver a <a class="back-link" href="{{ url_for('admin.index') }}">Panel administrativo</a></p>
+            </div>
+
+            {% if updated == 'True' %}
+            <div class="alert alert-success" role="alert"><i class="fa-solid fa-circle-check"></i> Pedido actualizado correctamente</div>
+            {% endif %}
+
+            <h4 class="fw-bold">Revisión pendiente</h4>
+            {% if not payments %}
+            <p>No hay registros.</p>
+            {% else %}
+            <table class="table table-borderless text-center" id="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Producto</th>
+                        <th scope="col">Método</th>
+                        <th scope="col">Inicio</th>
+                        <th scope="col">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                        {% if payment['valid'] %}
+                        <tr class="click-tr" onclick="view_payment(`{{ payment['id'] }}`, `{{ payment['state'] }}`)">
+                            <td>{{ payment['name'] }}</td>
+                            <td>{{ payment['method'] }} ({{ payment['price'] }} {{ payment['currency'] }})</td>
+                            <td>{{ payment['start_date'] }}</td>
+                            <td>
+                                {% if payment['state'] == 0 %}
+                                    {% if payment['response'] != '0' %}
+                                    <span class="badge bg-secondary">Código enviado</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Esperando código</span>
+                                    {% endif %}
+                                {% endif %}
+
+                                {% if payment['state'] == 1 %}
+                                <span class="badge bg-warning">Revisión pendiente</span>
+                                {% endif %}
+
+                                {% if payment['state'] == 2 %}
+                                <span class="badge bg-success">Acreditado</span>
+                                {% endif %}
+
+                                {% if payment['state'] == 3 %}
+                                <span class="badge bg-danger">Rechazado</span>
+                                {% endif %}
+
+                                {% if payment['state'] == 4 %}
+                                <span class="badge bg-primary">Duplicado</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+            <div class="text-left back-container">
+                <p class="back-text">Ir a <a class="back-link" href="{{ url_for('admin.receipts_all') }}">Pagos completados</a></p>
+            </div>
+
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable({
+                "language": {
+                    "url": "{{ url_for('static', filename='json/datatables.json') }}"
+                }
+            });
+        });
+
+        function view_payment(payment_id, payment_state) {
+            if (payment_state == '1' || payment_state == '0') window.location = `/admin/dispatch_payment/${payment_id}`;
+            else window.location = `/payment_status/${payment_id}`;
+        }
+    </script>
+</body>
+
+</html>

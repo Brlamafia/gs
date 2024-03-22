@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Tienda", "¡Adquiere autos, casas, monedas, lo que quieras! Ahora con
+    acreditaciones automáticas.") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="p-3">
+            <h1 class="mt-3 mb-3 text-center">Tienda <i class="em em-money_mouth_face" aria-role="presentation" aria-label="MONEY-MOUTH FACE"></i></h1>
+            <div class="row d-flex justify-content-center">
+                {% if session['dollar_mode'] %}
+                <a class="link w-25 text-center" href="{{ url_for('store.change_currency') }}"><i class="fa-solid fa-cart-shopping"></i> Ver precios en moneda local</a>
+                {% else %}
+                <a class="link w-25 text-center" href="{{ url_for('store.change_currency') }}"><i class="fa-solid fa-coins"></i> Ver precios en dolares</a>
+                {% endif %}
+            </div>
+
+            {% if country == 'AR' %}
+            <style>
+                .hover:hover {
+                    cursor: pointer;
+                }
+            </style>
+            <div id="carouselExampleIndicators" class="carousel slide mb-3 mt-3" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+                        class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+                        aria-label="Slide 2"></button>
+                </div>
+                <div class="carousel-inner" style="border-radius: 10px;">
+                    <div class="carousel-item active">
+                        <img src="{{ url_for('static', filename='images/store_slider/argentinaprecios.jpg') }}" class="d-block w-100"
+                            alt="...">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{{ url_for('static', filename='images/store_slider/subdiamond.jpg') }}" class="d-block w-100 hover"
+                            alt="..." onclick="window.location = `https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380848312cb8c018314450efe0098`">
+                    </div>
+                </div>
+            </div>
+
+            <p class="col-xs-1 fs-6 text-center mt-5" style="font-size: 36px;"><i class="em em-tada" aria-role="presentation" aria-label="PARTY POPPER"></i> Las ofertas especiales terminan en <i class="em em-tada" aria-role="presentation" aria-label="PARTY POPPER"></i></p>
+            <h3 class="mt-3 mb-4 text-center" style="font-weight: bold; color: rgb(69, 132, 226);"><span id="days"></span> días <span id="hours"></span> horas <span id="minutes"></span> minutos <span id="seconds"></span> segundos</h3>
+            {% endif %}
+
+            {% if country == 'CO' %}
+            <p class="col-xs-1 fs-6 text-center mt-5" style="font-size: 36px;"><i class="em em-tada" aria-role="presentation" aria-label="PARTY POPPER"></i> Las ofertas especiales terminan en <i class="em em-tada" aria-role="presentation" aria-label="PARTY POPPER"></i></p>
+            <h3 class="mt-3 mb-4 text-center" style="font-weight: bold; color: rgb(69, 132, 226);"><span id="days"></span> días <span id="hours"></span> horas <span id="minutes"></span> minutos <span id="seconds"></span> segundos</h3>
+            {% endif %}
+
+            {% if country == 'VE' %}
+            <p class="col-xs-1 fs-6 text-center mt-5" style="font-size: 36px;"><i class="em em-tada" aria-role="presentation" aria-label="PARTY POPPER"></i> Las ofertas especiales terminan en <i class="em em-tada" aria-role="presentation" aria-label="PARTY POPPER"></i></p>
+            <h3 class="mt-3 mb-4 text-center" style="font-weight: bold; color: rgb(69, 132, 226);"><span id="days"></span> días <span id="hours"></span> horas <span id="minutes"></span> minutos <span id="seconds"></span> segundos</h3>
+            {% endif %}
+            
+            <div class="row d-flex justify-content-center mt-3">
+            {% if country == 'AR' %}
+            <div class="card product-card" style="width: 18rem;" onclick="window.location = `https://discord.com/channels/600032534155362369/1009604573851291772/1009903009075040256`">
+                    
+                <div class="ribbon-wrapper-green">
+                    <div class="ribbon-green">OFERTA</div>
+                </div>
+
+                <img src="https://i.imgur.com/kmfR5bx.png" class="card-img-top">
+                <p class="text-center product-name">
+                    Taza oficial + 200 GS
+                    <br>
+                    <span class="product-price">2000 ARS</span>
+                </p>
+            </div>
+            {% endif %}
+
+            {% for product in products %}
+                {% if not product['invalid'] %}
+                <div class="card product-card" style="width: 18rem;" onclick="window.location = `{{ url_for('store.payment_method', product_id = product['id']) }}`">
+                    
+                    {% if product['offer'] %}
+                    <div class="ribbon-wrapper-green">
+                        <div class="ribbon-green">OFERTA</div>
+                    </div>
+                    {% endif %}
+
+                    <img src="/static/images/store/{{ product['image'] }}" class="card-img-top">
+                    <p class="text-center product-name">
+                        {{ product['name'] }}
+                        <br>
+                        <span class="product-price">{{ product['price'] }} {{ product['currency'] }}</span>
+                    </p>
+                </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+
+            <div class="row d-flex justify-content-center">
+                <a class="link w-25 text-center" href="{{ url_for('store.normal') }}"><i class="fa-solid fa-cart-shopping"></i> Ir a la tienda común</a>
+            </div>
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => { 
+  
+          //===
+          // VARIABLES
+          //===
+
+          // {% if country == 'AR' %}
+          const DATE_TARGET = new Date('11/1/2022 0:01 AM');
+          // {% endif %}
+
+          // {% if country == 'CO' %}
+          const DATE_TARGET = new Date('11/1/2022 0:01 AM');
+          // {% endif %}
+
+          // {% if country == 'VE' %}
+          const DATE_TARGET = new Date('11/1/2022 0:01 AM');
+          // {% endif %}
+
+          // DOM for render
+          const SPAN_DAYS = document.querySelector('span#days');
+          const SPAN_HOURS = document.querySelector('span#hours');
+          const SPAN_MINUTES = document.querySelector('span#minutes');
+          const SPAN_SECONDS = document.querySelector('span#seconds');
+          // Milliseconds for the calculations
+          const MILLISECONDS_OF_A_SECOND = 1000;
+          const MILLISECONDS_OF_A_MINUTE = MILLISECONDS_OF_A_SECOND * 60;
+          const MILLISECONDS_OF_A_HOUR = MILLISECONDS_OF_A_MINUTE * 60;
+          const MILLISECONDS_OF_A_DAY = MILLISECONDS_OF_A_HOUR * 24
+  
+          //===
+          // FUNCTIONS
+          //===
+  
+          /**
+          * Method that updates the countdown and the sample
+          */
+          function updateCountdown() {
+              // Calcs
+              const NOW = new Date()
+              const DURATION = DATE_TARGET - NOW;
+              const REMAINING_DAYS = Math.floor(DURATION / MILLISECONDS_OF_A_DAY);
+              const REMAINING_HOURS = Math.floor((DURATION % MILLISECONDS_OF_A_DAY) / MILLISECONDS_OF_A_HOUR);
+              const REMAINING_MINUTES = Math.floor((DURATION % MILLISECONDS_OF_A_HOUR) / MILLISECONDS_OF_A_MINUTE);
+              const REMAINING_SECONDS = Math.floor((DURATION % MILLISECONDS_OF_A_MINUTE) / MILLISECONDS_OF_A_SECOND);
+              // Thanks Pablo Monteserín (https://pablomonteserin.com/cuenta-regresiva/)
+  
+              // Render
+              SPAN_DAYS.textContent = REMAINING_DAYS;
+              SPAN_HOURS.textContent = REMAINING_HOURS;
+              SPAN_MINUTES.textContent = REMAINING_MINUTES;
+              SPAN_SECONDS.textContent = REMAINING_SECONDS;
+          }
+  
+          //===
+          // INIT
+          //===
+          updateCountdown();
+          // Refresh every second
+          setInterval(updateCountdown, MILLISECONDS_OF_A_SECOND);
+      });
+      </script>
+</body>
+
+</html>

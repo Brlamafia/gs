@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Abrir caja misteriosa", "*ruido de cofre*") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="mx-auto p-5 col-md-6">
+            <p class="mt-3 back-text text-center">< Volver a <a class="back-link" href="{{ url_for('auth.mystery_boxes') }}">Cajas misteriosas</a></p>
+            <h1 class="mb-3 text-center">{{ box['name'] }}</i></h1>
+            <p class="col-xs-1 fs-6 text-center">Haga click repetidamente para abrir la caja</p>
+
+            <div class="modal fade" id="modalRedeem" tabindex="-1"
+                aria-labelledby="modalRedeem_Label" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalRedeem_Label">Caja misteriosa</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Todos los códigos han sido canjeados.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <audio id="click_audio" src="{{ url_for('static', filename='audio/box_click.mp3') }}" preload="auto">
+                Your browser does not support the <code>audio</code> element.
+            </audio>
+
+            <audio id="result_audio" src="{{ url_for('static', filename='audio/result1.mp3') }}" preload="auto">
+                Your browser does not support the <code>audio</code> element.
+            </audio>
+
+            <audio id="code_audio" src="{{ url_for('static', filename='audio/result2.mp3') }}" preload="auto">
+                Your browser does not support the <code>audio</code> element.
+            </audio>
+
+            <style>
+                .heartbeat {
+                    -webkit-animation-duration: 1s;
+                    animation-duration: 1s;
+                    -webkit-animation-name: heartbeat;
+                    animation-name: heartbeat;
+                }
+                
+                @keyframes heartbeat {
+                    0% {
+                        transform: scale(1);
+                    }
+                
+                    20% {
+                        transform: scale(1.1);
+                    }
+                
+                    40% {
+                        transform: scale(1);
+                    }
+                
+                    60% {
+                        transform: scale(1.1);
+                    }
+                
+                    80% {
+                        transform: scale(1);
+                    }
+                
+                    100% {
+                        transform: scale(1);
+                    }
+                }
+
+                @-webkit-keyframes bounce {
+                    0%, 20%, 50%, 80%, 100% {-webkit-transform: translateY(0);}
+                    40% {-webkit-transform: translateY(-30px) }
+                    60% {-webkit-transform: translateY(-20px);}
+                } 
+                @keyframes bounce {
+                    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+                    40% {transform: translateY(-30px);}
+                    60% {transform: translateY(-20px);}
+                } 
+                
+                .bounce {
+                    -webkit-animation-duration: 1s;
+                    animation-duration: 1s;
+                    -webkit-animation-name: bounce;
+                    animation-name: bounce;
+                }
+
+                code {
+                    color: rgb(27, 27, 27);
+                    background-color: rgb(228, 228, 228);
+                    border-radius: 8px;
+                    padding: 4px;
+                }
+            </style>
+
+            <div class="mt-5 mb-4 d-grid gap-2 col-12 mx-auto">
+                <img id="box_element" src="{{ url_for('static', filename='images/mystery_boxes/close.png') }}" class="img-thumbnail mx-auto d-block" width="200" style="user-select: none; background: transparent; border: none;">
+                
+                <br>
+
+                <div id="code_container" class="animate__animated">
+                    <div class="alert alert-primary" role="alert"><i class="fa-solid fa-circle-info"></i> ¡Guarda los códigos porque una vez que cierres esta pestaña no podrás recuperarlos de nuevo!</div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+    <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        var all_codes;
+
+        var code_audio = document.getElementById('code_audio');
+        var result_audio = document.getElementById('result_audio');
+        var click_audio = document.getElementById('click_audio');
+
+        var opened = false;
+        var total_clicks = 0;
+        var necessary_clicks = 3 + parseInt("{{ box['quality'] }}");
+        var box_element = document.getElementById("box_element");
+
+        var enabledClick = true;
+
+        var code_container = document.getElementById("code_container");
+        code_container.style.display = 'none';
+
+        function add_code(number, code, info)
+        {
+            code_audio.pause();
+            code_audio.currentTime = 0;
+            code_audio.play();
+
+            code_container.innerHTML += `<div class="top-item animate__fadeInUp" id="code_${number}">${number}. <code>${code}</code> 👉 ${info}</div>`
+
+            var code_element = document.getElementById(`code_${number}`);
+            if (number == parseInt("{{ box['amount'] }}"))
+            {
+                party.sparkles(code_element, {
+                    count: 60,
+                    size: 0.7
+                });
+            }
+            else
+            {
+                party.sparkles(code_element, {
+                    count: 5,
+                    size: 0.7
+                });
+            }
+        }
+
+        box_element.addEventListener("click", function(e) {
+            e.preventDefault;
+            
+            if (!opened && enabledClick)
+            {
+                box_element.classList.remove("bounce");
+                box_element.offsetWidth = box_element.offsetWidth;
+
+                click_audio.pause();
+                click_audio.currentTime = 0;
+                click_audio.play();
+
+                total_clicks++;
+
+                enabledClick = false;
+                setTimeout(function() {
+                    enabledClick = true;
+                }, 900);
+
+                if (total_clicks > necessary_clicks)
+                {
+                    click_audio.pause();
+                    click_audio.currentTime = 0;
+                    result_audio.play();
+
+                    box_element.src = "{{ url_for('static', filename='images/mystery_boxes/open.png') }}";
+                    box_element.classList.add("heartbeat");
+
+                    party.confetti(box_element, {
+                        count: 60,
+                        spread: 30,
+                        size: 0.7
+                    });
+
+                    opened = true;
+
+                    axios.get("/inventory/mystery_boxes/codes/{{ box['id'] }}").then((response) => {
+                        console.log(response.data);
+                        
+                        code_container.style.display = 'block';
+                        code_container.classList.add("animate__fadeIn");
+
+                        all_codes = response.data;
+                        
+                        var top_time;
+                        for (var i = 0; i < response.data.length; i++)
+                        {
+                            top_time = 900 * i;
+                            setTimeout(add_code, 900 * i, response.data[i].number, response.data[i].code, response.data[i].info);
+                        }
+
+                        setTimeout(function(codes) {
+                            code_audio.pause();
+                            code_audio.currentTime = 0;
+                            code_audio.play();
+
+                            code_container.innerHTML += `<div id="redeem_btn" class="d-grid gap-2 col-6 mx-auto mt-3"><button class="btn btn-lg btn-primary" type="submit" onclick="redeem_codes()">Canjear todo</button></div>`;
+                        }, top_time + 1500, response.data);
+                    });
+                }
+                else
+                {
+                    party.sparkles(box_element, {
+                        count: 7,
+                        size: 0.7
+                    });
+
+                    box_element.classList.add("bounce");
+                }
+            }
+        }, false);
+
+        function redeem_codes()
+        {
+            var redeem_btn = document.getElementById("redeem_btn");
+
+            party.confetti(redeem_btn, {
+                count: 30,
+                spread: 30,
+                size: 0.7
+            });
+
+            redeem_btn.style.display = 'hidden';
+
+            axios.post("/inventory/mystery_boxes/codes/redeem", all_codes).then((response) => {
+                redeem_btn.remove();
+                $("#modalRedeem").modal('show');
+
+                setTimeout(function() {
+                    window.location = "{{ url_for('auth.mystery_boxes') }}";
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+
+</html>

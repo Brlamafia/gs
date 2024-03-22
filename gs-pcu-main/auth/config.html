@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Configuración", "Configuración de cuenta") }}
+</head>
+
+<body>
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar(True) }}
+
+        <div class="p-3">
+            <div class="text-left back-container">
+                <p class="back-text">< Volver a <a class="back-link" href="{{ url_for('auth.account') }}">Mi Cuenta</a></p>
+            </div>
+            
+            {% if error %}
+                <div class="alert alert-danger" role="alert"><i class="fa-solid fa-bug"></i> {{ error }}</div>
+            {% endif %}
+
+            {% if success %}
+                <div class="alert alert-success" role="alert"><i class="fa-solid fa-circle-check"></i> {{ success }}</div>
+            {% endif %}
+
+            
+            <form method="post" class="col-md-6">
+                <h4 class="fw-bold">Cambiar de nombre (costo de 10 GS)</h4>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                    <input type="text" class="form-control" placeholder="Nombre_Apellido" name="username">
+                </div>
+
+                <h4 class="mt-4 fw-bold">Cambiar contraseña</h4>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                    <input type="password" class="form-control" placeholder="Contraseña actual" name="password">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa-solid fa-user-lock"></i></span>
+                    <input type="password" class="form-control" placeholder="Contraseña nueva" name="new_password">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa-solid fa-user-shield"></i></span>
+                    <input type="password" class="form-control" placeholder="Repita la contraseña nueva" name="repeat_password">
+                </div>
+    
+                <button class="btn btn-lg btn-primary" type="submit">Guardar</button>
+            </form>
+
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+</body>
+
+</html>

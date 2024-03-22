@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle with context %}
+    {{ generateHeader("Golden State - Iniciar sesión", "Inicie sesión en su cuenta de Golden State.") }}
+</head>
+
+<body class="text-center login-body">
+
+    <main class="form-signin" {% if not msg %} style="animation: fadeInUp; animation-duration: 1.5s;" {% endif %}>
+        <form method="post">
+            <!--<img class="mb-4" src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="300">-->
+            <h1 class="h3 mb-3 fw-bold title">Iniciar sesión</h1>
+
+            {% if msg %}
+            <div class="alert alert-danger" role="alert"><i class="fa-solid fa-bug"></i> {{ msg }}</div>
+            {% endif %}
+
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                <input type="text" class="form-control" placeholder="Nombre_Apellido" name="username" required>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                <input type="password" class="form-control" placeholder="Contraseña" name="password" required>
+            </div>
+
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Ingresar</button>
+            <p class="mt-3 mb-2 text-muted">&copy; 2019–2022</p>
+        </form>
+    </main>
+
+    {{ javascriptBundle() }}
+</body>
+
+</html>

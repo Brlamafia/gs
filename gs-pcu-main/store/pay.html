@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Abonar pago", "Abone el pago correspondiente y obtenga su producto.") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="p-5">
+            <div class="text-left back-container">
+                <p class="back-text">< Volver a <a class="back-link" href="{{ url_for('store.receipts') }}">Mis comprobantes</a></p>
+            </div>
+
+            <div class="alert alert-warning" role="alert"><i class="fa-solid fa-warning"></i> <b>Aviso:</b> ¡Cualquier tipo de comunicación se hará a través de esta página! Ningún gestor de pagos te pedirá información por otro medio (Discord por ejemplo). Tampoco te pediremos ninguna contraseña u otros datos, ¡mantente alerta ante intentos de estafa!</div>
+            <div class="alert alert-primary" role="alert"><i class="fa-solid fa-circle-info"></i> <b>información:</b> En caso de pagar con Pago Fácil o Rapipago, debes esperar a que un encargado te envíe un código (en esta misma página), luego con ese código vas a cualquier sucursal y se lo decis. Cada código vence en 24 horas (el encargado te dará la hora exacta y la fecha de vencimiento) ¡No pagues si ya está vencido!</div>
+
+            <h4 class="fw-bold">Abonar pago</h4>
+            <p class="col-md-6">Este es el último paso a completar en la compra de "{{ payment['name'] }}", realiza el
+                pago mediente "{{ payment['method'] }}" en caso de que no lo hayas hecho y sube una imagen del recibo.
+            </p>
+
+            <h4 class="fw-bold mt-3">Datos para depositar</h4>
+            <div class="code col-md-6" style="text-align: left;">
+                <code>
+                    Método: {{ method_info[0] }}
+                    <br>
+                    {% if payment['response'] != '0' %}
+                    Código: <b>{{ payment['response'] }}</b>
+                    {% else %}
+                    {{ method_info[1] | safe }}
+                    {% endif %}
+                    <br>
+                    Monto: {{ payment['price'] }} {{ payment['currency'] }}
+                </code>
+            </div>
+
+            <h4 class="fw-bold mt-3">Subir comprobante</h4>
+            <form method="POST" enctype="multipart/form-data" class="col-md-6">
+                <input class="form-control" type="file" name="file" accept="image/*" required/>
+                <button type="submit" class="btn btn-primary mt-3">Finalizar</button>
+            </form>
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+</body>
+
+</html>

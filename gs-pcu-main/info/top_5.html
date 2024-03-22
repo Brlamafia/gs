@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Lista de sanciones", "Gana nuevas experiencias y aventuras. ¡Únete a Golden State
+    ahora mismo!") }}
+</head>
+
+<body>
+
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="p-3">
+            <div class="text-left back-container">
+                <p class="back-text">< Volver a <a class="back-link" href="{{ url_for('info.index') }}">Inicio</a></p>
+            </div>
+
+            <h4 class="mt-3 fw-bold">Últimas 500 sanciones</h4>
+            <table class="table table-borderless text-center" id="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Admin</th>
+                        <th scope="col">Razón</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for player in players %}
+                        <tr>
+                            <td>{{ player['user_nombre'] }}</td>
+                            <td>{{ player['admin_nombre'] }}</td>
+                            <td>{{ player['razon'] }}</td>
+                            <td>{{ player['tipo_san'] }}</td>
+                            <td>{{ player['fecha'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable({
+                "language": {
+                    "url": "{{ url_for('static', filename='json/datatables.json') }}"
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

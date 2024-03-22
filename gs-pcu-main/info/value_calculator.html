@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Calculadora de valor", "¿Quieres calcular el valor de tu propia cuenta?") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="mx-auto p-5 col-md-6">
+            <h1 class="mt-3 mb-3 text-center">🧮​​ Calculadora de valor 💵</h1>
+            <p class="col-xs-1 fs-6 text-center">Calcula el valor de tu cuenta de GS:RP</p>
+
+            {% if error %}
+                <div class="alert alert-danger" role="alert"><i class="fa-solid fa-bug"></i> {{ error }}</div>
+            {% endif %}
+
+            <form method="post" class="form-row">
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" class="form-control" placeholder="Nombre_Apellido" name="username">
+                </div>
+                
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button class="btn btn-lg btn-primary" type="submit">Calcular</button>
+                </div>
+            </form>
+
+            {% if player %}
+            <br>
+            <div class="mt-5 mb-4 d-grid gap-2 col-6 mx-auto">
+                <img src="{{ url_for('static', filename='images/skin/') }}{{ player['skin'] }}.png" class="img-thumbnail mx-auto d-block" style="border-radius: 50%; background-image: url('https://acegif.com/wp-content/gifs/raining-money-8.gif'); background-size: cover; box-shadow: 0px 0px 22px -1px rgba(0,0,0,0.42); -webkit-box-shadow: 0px 0px 22px -1px rgba(0,0,0,0.42); -moz-box-shadow: 0px 0px 22px -1px rgba(0,0,0,0.42);" width="200">
+                <h3 class="text-center fw-bold">{{ player['nombre'] }}</h3>
+                <span class="product-price text-center" style="font-size: 32px; border-radius: 10px; padding: 10px;">{{ value }} U$S</span>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+</body>
+
+</html>

@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Método (" + session['country'] + ")", "¡Adquiere autos, casas, monedas, lo que quieras! Ahora con
+    acreditaciones automáticas.") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="p-5">
+            <h1 class="mt-3 mb-3 text-center">Seleccione un método</h1>
+            <p class="col-xs-1 fs-6 text-center">Seleccione su método de pago preferido para comprar: {{product['name']}}, precio adaptado para {{product['country']}}</p>
+            
+            {% if session['country'] == 'US' %}
+            <h4 class="fw-bold mt-5">Acreditación automática (solo con dolares)</h4>
+            <div class="row">
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(0, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/paypal.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        PayPal
+                        <br>
+                        <span class="payment-method">Internacional</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(1, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/bitcoin.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Bitcoin
+                        <br>
+                        <span class="payment-method">Internacional</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(2, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/litecoin.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Litecoin
+                        <br>
+                        <span class="payment-method">Internacional</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(3, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/ethereum.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Ethereum
+                        <br>
+                        <span class="payment-method">Internacional</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(4, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/stripe.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Stripe (tarjetas débito/crédito)
+                        <br>
+                        <span class="payment-method">Internacional</span>
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if session['country'] != 'US' %}
+            <h4 class="fw-bold mt-5">Acreditación manual (entre 12hs a 48hs)</h4>
+            <div class="row">
+                {% if session['country'] == 'AR' %}
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(5, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/uala.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Ualá (CVU)
+                        <br>
+                        <span class="payment-method">Argentina</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(6, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/mercadopago.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        MercadoPago (CVU)
+                        <br>
+                        <span class="payment-method">Argentina</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(20, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/prex.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Prex (CVU)
+                        <br>
+                        <span class="payment-method">Argentina</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(21, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/brubank.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Brubank (CBU)
+                        <br>
+                        <span class="payment-method">Argentina</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(22, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/lemoncash.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        LemonCash (CVU o $lemontag)
+                        <br>
+                        <span class="payment-method">Argentina</span>
+                    </p>
+                </div>
+
+                <!--<div class="card product-card" style="width: 11rem;" onclick="checkout(7, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/pagofacil.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Pago Fácil (efectivo)
+                        <br>
+                        <span class="payment-method">Argentina</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(8, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/rapipago.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Rapipago (efectivo)
+                        <br>
+                        <span class="payment-method">Argentina</span>
+                    </p>
+                </div>-->
+                {% endif %}
+
+                {% if session['country'] == 'UY' %}
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(23, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/prex.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Prex
+                        <br>
+                        <span class="payment-method">Uruguay</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(24, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/midinero.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        MiDinero
+                        <br>
+                        <span class="payment-method">Uruguay</span>
+                    </p>
+                </div>
+                {% endif %}
+
+                {% if session['country'] == 'VE' %}
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(9, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/bancomercantil.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Banco Mercantil
+                        <br>
+                        <span class="payment-method">Venezuela</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(10, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/banconacionaldecredito.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Banco Nacional de Crédito
+                        <br>
+                        <span class="payment-method">Venezuela</span>
+                    </p>
+                </div>
+
+                <!-- <div class="card product-card" style="width: 11rem;" onclick="checkout(11, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/bancovenezuela.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Banco de Venezuela
+                        <br>
+                        <span class="payment-method">Venezuela</span>
+                    </p>
+                </div> -->
+                {% endif %}
+
+                {% if session['country'] == 'CO' %}
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(12, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/nequi.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Nequi
+                        <br>
+                        <span class="payment-method">Colombia</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(13, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/bancolombia.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        BanColombia
+                        <br>
+                        <span class="payment-method">Colombia</span>
+                    </p>
+                </div>
+                {% endif %}
+
+                {% if session['country'] == 'PE' %}
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(15, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/yape.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Yape
+                        <br>
+                        <span class="payment-method">Perú</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(16, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/bcp.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        BCP
+                        <br>
+                        <span class="payment-method">Perú</span>
+                    </p>
+                </div>
+                {% endif %}
+
+                {% if session['country'] == 'MX' %}
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(17, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/bancomer.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Bancomer
+                        <br>
+                        <span class="payment-method">México</span>
+                    </p>
+                </div>
+
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(18, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/oxxo.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Oxxo
+                        <br>
+                        <span class="payment-method">México</span>
+                    </p>
+                </div>
+                {% endif %}
+
+                {% if session['country'] == 'DO' %}
+                <div class="card product-card" style="width: 11rem;" onclick="checkout(19, `{{ product['id'] }}`)">
+                    <img class="method-image" src="{{ url_for('static', filename='images/method/bancopopular.png') }}" class="card-img-top">
+                    <p class="text-center method-name">
+                        Banco Popular
+                        <br>
+                        <span class="payment-method">República Dominicana</span>
+                    </p>
+                </div>
+                {% endif %}
+
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+
+    <script>
+        function checkout(method_id, product_id) {
+            window.location = `/checkout/${product_id}/${method_id}`;
+        }
+    </script>
+</body>
+
+</html>

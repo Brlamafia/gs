@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Buscar usuarios", "Panel administrativo") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="p-5">
+            <div class="text-left back-container">
+                <p class="back-text">< Volver a <a class="back-link" href="{{ url_for('admin.index') }}">Panel administrativo</a></p>
+            </div>
+
+            {% if error %}
+            <div class="alert alert-danger" role="alert"><i class="fa-solid fa-bug"></i> {{ error }}</div>
+            {% endif %}
+
+            <form method="post" class="col-md-6">
+                <h4 class="fw-bold">Buscar usuarios</h4>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                    <input type="text" class="form-control" placeholder="Nombre_Apellido, IP, o Email" name="filter">
+                </div>
+
+                <button class="btn btn-lg btn-primary" type="submit">Buscar</button>
+            </form>
+
+            {% if users %}
+            <br>
+            <table class="table table-borderless text-center mt-3" id="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">IP</th>
+                        <th scope="col">UserID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr class="click-tr" onclick="window.location = `/auth/account/{{user['id_users']}}`;">
+                            <td>{{ user['nombre'] }}</td>
+                            <td>{{ user['email'] }}</td>
+                            <td>{{ user['ultima_ip'] }}</td>
+                            <td>{{ user['id_users'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable({
+                "language": {
+                    "url": "{{ url_for('static', filename='json/datatables.json') }}"
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

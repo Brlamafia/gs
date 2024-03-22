@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Registro", "Panel administrativo") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="p-3">
+            <div class="text-left back-container">
+                <p class="back-text">
+                    < Volver a <a class="back-link" href="{{ url_for('admin.index') }}">Panel administrativo</a>
+                </p>
+            </div>
+
+            <h4 class="mt-3 fw-bold">Últimos 500 registros</h4>
+            <table class="table table-borderless text-center" id="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Admin</th>
+                        <th scope="col">Acción</th>
+                        <th scope="col">Filtro</th>
+                        <th scope="col">Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in registry %}
+                        {% if session['id'] == 81045 %}
+                        <tr>
+                            <td>{{ item['admin_name'] }}</td>
+                            <td>{{ item['action_name'] }}</td>
+                            <td>{{ item['filter'] }}</td>
+                            <td>{{ item['date'] }}</td>
+                        </tr>
+                        {% else %}
+                            {% if not item['hidden'] %}
+                            <tr>
+                                <td>{{ item['admin_name'] }}</td>
+                                <td>{{ item['action_name'] }}</td>
+                                <td>{{ item['filter'] }}</td>
+                                <td>{{ item['date'] }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endif %}
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable({
+                "language": {
+                    "url": "{{ url_for('static', filename='json/datatables.json') }}"
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

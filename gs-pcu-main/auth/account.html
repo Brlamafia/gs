@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {% if is_owner %}
+    {{ generateHeader("Golden State - Mi cuenta", "Panel de cuenta") }}
+    {% else %}
+    {{ generateHeader("Golden State - " + account['nombre'], "Panel de cuenta") }}
+    {% endif %}
+</head>
+
+<body>
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {% if is_owner %}
+        {{ generateNavbar(True) }}
+        {% else %}
+        {{ generateNavbar(False, True) }}
+        {% endif %}
+
+
+        <div class="p-3">
+            <div class="container">
+                <div class="row">
+                    <div class="m-2 col-md-4 profile-data">
+                        <div class="text-center">
+                            <img class="profile-image"
+                                src="{{ url_for('static', filename='images/skin/') }}{{ principal['skin'] }}.png"
+                                alt="Skin" width="50%">
+                            <p class="profile-name mt-2">
+                                {{ account['nombre'] }}
+                                {% if principal['vip'] == 1 %}
+                                <span class="vip-level silver">Silver</span>
+                                {% endif %}
+
+                                {% if principal['vip'] == 2 %}
+                                <span class="vip-level bronze">Bronze</span>
+                                {% endif %}
+
+                                {% if principal['vip'] == 3 %}
+                                <span class="vip-level gold">Gold</span>
+                                {% endif %}
+
+                                {% if principal['vip'] == 4 %}
+                                <span class="vip-level diamond">Diamond</span>
+                                {% endif %}
+                            </p>
+                            {% if principal['admin'] %}
+                            <p class="role-profile" style="background-color: {{ account['admin_color'] }};">{{
+                                account['admin_name'] | safe }}</p>
+                            {% endif %}
+
+                            {% if extra['estado_texto'] %}
+                            <p class="state-profile">"{{ extra['estado_texto'] }}"</p>
+                            {% endif %}
+                        </div>
+
+                        <p class="progress-text">Nivel ({{ principal['nivel'] }}):</p>
+                        <div class="progress">
+                            <div class="progress-bar level-bar" role="progressbar"
+                                style="width: {{ principal['experiencia'] }}%;"
+                                aria-valuenow="{{ principal['experiencia'] }}" aria-valuemin="0"
+                                aria-valuemax="{{ principal['max_exp'] }}">{{ principal['experiencia'] }}/{{
+                                principal['max_exp'] }}</div>
+                        </div>
+
+                        <p class="progress-text">Hambre:</p>
+                        <div class="progress">
+                            <div class="progress-bar hungry-bar" role="progressbar"
+                                style="width: {{ principal['hambre'] }}%;" aria-valuenow="{{ principal['hambre'] }}"
+                                aria-valuemin="0" aria-valuemax="100">{{ principal['hambre'] }}%</div>
+                        </div>
+
+                        <p class="progress-text">Sed:</p>
+                        <div class="progress">
+                            <div class="progress-bar thrist-bar" role="progressbar"
+                                style="width: {{ principal['sed'] }}%;" aria-valuenow="{{ principal['sed'] }}"
+                                aria-valuemin="0" aria-valuemax="100">{{ principal['sed'] }}%</div>
+                        </div>
+
+                        <p class="progress-text">Vida:</p>
+                        <div class="progress">
+                            <div class="progress-bar health-bar" role="progressbar"
+                                style="width: {{ principal['vida'] }}%;" aria-valuenow="{{ principal['vida'] }}"
+                                aria-valuemin="0" aria-valuemax="100">{{ principal['vida'] }}%</div>
+                        </div>
+
+                        <p class="progress-text">Chaleco:</p>
+                        <div class="progress mb-3">
+                            <div class="progress-bar armour-bar" role="progressbar"
+                                style="width: {{ principal['chaleco'] }}%;" aria-valuenow="{{ principal['chaleco'] }}"
+                                aria-valuemin="0" aria-valuemax="100">{{ principal['chaleco'] }}%</div>
+                        </div>
+
+                        {% if is_owner %}
+                        <div class="row d-flex justify-content-center">
+                                <a class="link text-center" href="{{ url_for('auth.mystery_boxes') }}"><i
+                                        class="fa-solid fa-box-open"></i> Mis cajas misteriosas</a>
+                                <a class="link text-center" href="{{ url_for('store.redeem') }}"><i
+                                        class="fa-solid fa-gift"></i> Canjear código</a>
+                                <a class="link text-center" href="{{ url_for('store.receipts') }}"><i
+                                    class="fa-solid fa-cart-shopping"></i> Mis comprobantes</a> <br>
+                                <a class="link text-center" href="{{ url_for('auth.config') }}"><i
+                                    class="fa-solid fa-gear"></i> Configuración</a>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                    <div class="m-2 col-md profile-data">
+
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a href="#information" class="nav-link active" data-bs-toggle="tab">Información</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#vehicles" class="nav-link" data-bs-toggle="tab">Vehículos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#bank" class="nav-link" data-bs-toggle="tab">Banco</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#registry" class="nav-link" data-bs-toggle="tab">Registro</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="information">
+
+
+                                <div style="float:left; width:290px; margin-left:5px; margin-bottom: 20px;"
+                                    class="inventory-table">
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/id-card.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Nombre:<span
+                                            style="float:right; font-weight: 600;">{{account['nombre']}}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/dinero.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Dinero:<span
+                                            style="float:right; font-weight: 600;">${{principal['dinero'] or
+                                            '0'}}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/banco.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Banco:<span style="float:right; font-weight: 600;">${{principal['banco']
+                                            or '0'}}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/sanciones.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Sanciones:<span style="float:right; font-weight: 600;">{{extra['jails']
+                                            or '0'}}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/clock.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Tiempo jugado:<span
+                                            style="float:right; font-weight: 600;">{{principal['played_time'] or '0'}}
+                                            horas</span></div>
+                                    <div class="hr"></div>
+                                </div>
+
+                                <div style="float:left; width:310px; margin-left:10px; margin-bottom: 40px"
+                                    class="inventory-table">
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/registered.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Registrado:<span
+                                            style="float:right; font-weight: 600;">{{account['created_at']}}</span>
+                                    </div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/calendar.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Última conexión:<span
+                                            style="float:right; font-weight: 600;">{{account['ultima_conexion'] or
+                                            '0'}}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/telephone.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Telefono:<span
+                                            style="float:right; font-weight: 600;">{{inventory['celular'] or 'No
+                                            tiene'}}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/growth.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Edad:<span style="float:right; font-weight: 600;">{{ extra['edad'] }}
+                                            años</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/sex-education.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Sexo:<span style="float:right; font-weight: 600;">
+                                            {% if extra['sexo'] %}
+                                            Hombre
+                                            {% else %}
+                                            Mujer
+                                            {% endif %}
+                                        </span></div>
+                                    <div class="hr"></div>
+                                </div>
+
+
+
+                                <div style="float:left; width:290px; margin-left:5px" class="inventory-table">
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/medicina.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Medicamentos:<span
+                                            style="float:right; font-weight: 600;">{{inventory['medicamentos'] or
+                                            '0'}}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/maria.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Marihuana:<span
+                                            style="float:right; font-weight: 600;">{{inventory['crack'] or '0'}}g</span>
+                                    </div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/piezas.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Piezas:<span style="float:right; font-weight: 600;">{{inventory['piezas']
+                                            or '0'}}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/materiales.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Materiales:<span
+                                            style="float:right; font-weight: 600;">{{inventory['materiales'] or
+                                            '0'}}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/botiquin.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Botiquines:<span
+                                            style="float:right; font-weight: 600;">{{inventory['botiquines'] or
+                                            '0'}}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/semilla.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Semillas:<span
+                                            style="float:right; font-weight: 600;">{{inventory['semillas'] or
+                                            '0'}}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/radio.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Radio comunicador:<span style="float:right; font-weight: 600;">
+                                            {% if inventory['radio'] %}
+                                            Sí
+                                            {% else %}
+                                            No tiene
+                                            {% endif %}
+                                        </span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/destornillador.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Destornillador:<span style="float:right; font-weight: 600;">
+                                            {% if inventory['destornillador'] %}
+                                            Sí
+                                            {% else %}
+                                            No tiene
+                                            {% endif %}
+                                        </span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="{{ url_for('static', filename='images/icons/moneda.png') }}">&nbsp;
+                                    </div>
+                                    <div>&nbsp;Monedas GS:<span
+                                            style="float:right; font-weight: 600;">{{principal['monedas'] or
+                                            '0'}}</span></div>
+                                    <div class="hr"></div>
+                                </div>
+
+                                <div style="float:left; width:310px; margin-left:10px">
+                                    <div style="float:left"><img
+                                            src="https://rol5.fenixzone.com/imagenes/pistolas.png">&nbsp;</div>
+                                    <div>&nbsp;Pistola:<span style="float:right; font-weight: 600;">{{ weapon_names[
+                                            inventory['arma_2'] ] }}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="https://rol5.fenixzone.com/imagenes/escopeta.png">&nbsp;</div>
+                                    <div>&nbsp;Escopeta:<span style="float:right; font-weight: 600;">{{ weapon_names[
+                                            inventory['arma_3'] ] }}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="https://rol5.fenixzone.com/imagenes/subfusil.png">&nbsp;</div>
+                                    <div>&nbsp;Subfusil:<span style="float:right; font-weight: 600;">{{ weapon_names[
+                                            inventory['arma_4'] ] }}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="https://rol5.fenixzone.com/imagenes/asalto.png">&nbsp;</div>
+                                    <div>&nbsp;Asalto:<span style="float:right; font-weight: 600;">{{ weapon_names[
+                                            inventory['arma_5'] ] }}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="https://rol5.fenixzone.com/imagenes/rifle.png">&nbsp;</div>
+                                    <div>&nbsp;Rifle:<span style="float:right; font-weight: 600;">{{ weapon_names[
+                                            inventory['arma_6'] ] }}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="https://rol5.fenixzone.com/imagenes/armas-blancas.png">&nbsp;</div>
+                                    <div>&nbsp;Arma blanca:<span style="float:right; font-weight: 600;">{{ weapon_names[
+                                            inventory['arma_1'] ] }}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="https://rol5.fenixzone.com/imagenes/granada.png">&nbsp;</div>
+                                    <div>&nbsp;Explosivos:<span style="float:right; font-weight: 600;">{{ weapon_names[
+                                            inventory['arma_8'] ] }}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="https://rol5.fenixzone.com/imagenes/regalos.png">&nbsp;</div>
+                                    <div>&nbsp;Utensilios:<span style="float:right; font-weight: 600;">{{ weapon_names[
+                                            inventory['arma_10'] ] }}</span></div>
+                                    <div class="hr"></div>
+
+                                    <div style="float:left"><img
+                                            src="https://rol5.fenixzone.com/imagenes/16x16/camara.png">&nbsp;</div>
+                                    <div>&nbsp;Otro:<span style="float:right; font-weight: 600;">{{ weapon_names[
+                                            inventory['arma_9'] ] }}</span></div>
+                                    <div class="hr"></div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane fade" id="vehicles">
+                                {% if not vehicles %}
+                                <p>No tienes vehículos.</p>
+                                {% else %}
+                                <div class="row d-flex justify-content-center">
+                                    {% for vehicle in vehicles %}
+                                    <div class="card" style="width: 25%;">
+                                        <img src="{{ url_for('static', filename='images/vehicle/') }}{{ vehicle['modelo'] }}.png"
+                                            class="card-img-top" alt="...">
+                                        <p class="text-center vehicle-name">
+                                            {% if vehicle['seguro'] %}
+                                            <i class="fa-solid fa-lock" style="color: rgb(190, 69, 69);"></i>
+                                            {% else %}
+                                            <i class="fa-solid fa-unlock" style="color: rgb(91, 170, 84);"></i>
+                                            {% endif %}
+
+                                            {% if not vehicle['combustible'] %}
+                                            <i class="fa-solid fa-gas-pump" style="color: rgb(211, 130, 55);"></i>
+                                            {% endif %}
+
+                                            {{ vehicle['name'] }}
+                                            <br>
+                                            <span class="vehicle-enrollment">{{ vehicle['matricula'] }}</span>
+                                        </p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="tab-pane fade" id="bank">
+                                {% if not bank %}
+                                <p>No hay registros.</p>
+                                {% else %}
+                                <table class="table table-borderless text-center" id="bank_table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Monto</th>
+                                            <th scope="col">Razón</th>
+                                            <th scope="col">Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for transaction in bank %}
+                                        <tr>
+                                            <td>{{ transaction['monto'] | safe }}</td>
+                                            <td>{{ transaction['razon'] }}</td>
+                                            <td>{{ transaction['fecha'] }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% endif %}
+                            </div>
+                            <div class="tab-pane fade" id="registry">
+                                {% if not is_owner %}
+                                <p>Ultima IP: {{ account['ultima_ip'] }}</p>
+                                {% endif %}
+
+                                {% if not registry %}
+                                <p>No hay registros.</p>
+                                {% else %}
+                                {% if not account['id_users'] == 81045 %}
+                                <table class="table table-borderless text-center">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">País</th>
+                                            <th scope="col">Dirección IP</th>
+                                            <th scope="col">Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for login in registry %}
+                                        <tr>
+                                            <td><img src="https://flagcdn.com/w20/{{ login['country'] }}.png"
+                                                    style="border-radius: 3px;"></td>
+                                            <td><a style="text-decoration: none; color: #000;" href="https://geolocation-db.com/jsonp/{{ login['ip'] }}" target="_blank" rel="noopener noreferrer">{{ login['ip'] }}</a></td>
+                                            <td>{{ login['fecha'] }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <p>En caso de fallo utilizar: <a
+                                        href="http://check-host.net/">http://check-host.net/</a></p>
+                                {% else %}
+                                <img src="https://media1.giphy.com/media/TL5XQpSpASo4U/200.gif" alt="putooo">
+                                {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+
+    <script>
+        $(document).ready(function () {
+            $('#bank_table').DataTable({
+                "language": {
+                    "url": "{{ url_for('static', filename='json/datatables.json') }}"
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

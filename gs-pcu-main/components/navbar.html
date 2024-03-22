@@ -1,0 +1,47 @@
+{% macro generateNavbar(close_session = False, fix_admin = False) %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="100">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{{ url_for('info.index') }}">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://foro.gsroleplay.com/">Foro</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('store.index') }}">Tienda</a>
+                </li>
+                {% if session['admin'] %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('admin.index') }}">Admin</a>
+                </li>
+                {% endif %}
+
+                {% if fix_admin %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('admin.index') }}">Admin</a>
+                </li>
+                {% endif %}
+            </ul>
+
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    {% if close_session %}
+                    <a class="nav-link" href="{{ url_for('auth.log_out') }}"><i class="fa-solid fa-power-off"></i> Cerrar sesión</a>
+                    {% else %}
+                    <a class="nav-link" href="{{ url_for('auth.account') }}"><i class="fa-solid fa-user"></i> Mi cuenta</a>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endmacro %}

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle with context %}
+    {{ generateHeader("Golden State - Discord", "Verifícate en nuestro servidor de discord") }}
+</head>
+
+<body class="text-center login-body">
+
+    <main class="form-signin" style="animation: fadeInUp; animation-duration: 0.5s;">
+        <h1 class="h3 mb-3 fw-bold title">Verificación</h1>
+
+        {% if error %}
+            <div class="alert alert-danger" role="alert"><i class="fa-solid fa-bug"></i> {{ error | safe }}</div>
+        {% endif %}
+
+        {% if success %}
+            <div class="alert alert-success" role="alert"><i class="fa-solid fa-circle-check"></i> {{ success | safe }}</div>
+        {% endif %}
+    </main>
+
+    {{ javascriptBundle() }}
+</body>
+
+</html>

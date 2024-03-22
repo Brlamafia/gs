@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Despachar pago", "Abone el pago correspondiente y obtenga su producto.") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="p-5">
+            <div class="text-left back-container">
+                {% if payment['state'] == 2 %}
+                <p class="back-text">< Volver a <a class="back-link" href="{{ url_for('admin.receipts_all') }}">Pagos completados</a></p>
+                {% else %}
+                <p class="back-text">< Volver a <a class="back-link" href="{{ url_for('admin.receipts_list') }}">Revisión pendiente</a></p>
+                {% endif %}
+            </div>
+
+            {% if payment['state'] == 2 %}
+            <h4 class="fw-bold">Comprobante de {{ payment['nombre'] }}</h4>
+            {% else %}
+            <h4 class="fw-bold">Atender el pedido de {{ payment['nombre'] }}</h4>
+            {% endif %}
+
+            <p class="col-md-6">Ha solicitado el producto "{{ payment['name'] }}" (producto para {{ payment['country']
+                }}) pagando mediante {{ payment['method'] }}</p>
+
+            {% if payment['state'] == 1 %}
+            <h4 class="fw-bold mt-3">Datos para depositar</h4>
+            <div class="code col-md-6" style="text-align: left;">
+                <code>
+                    Método: {{ method_info[0] }}
+                    <br>
+                    {{ method_info[1] | safe }}
+                    <br>
+                    Monto: {{ payment['price'] }} {{ payment['currency'] }}
+                </code>
+            </div>
+            {% endif %}
+
+            <h4 class="fw-bold mt-3">Imagen del recibo</h4>
+            <style>
+                .img-fluid {
+                    border-radius: 10px;
+                    box-shadow: 0px 0px 39px 0px rgba(0, 0, 0, 0.1);
+                    -webkit-box-shadow: 0px 0px 39px 0px rgba(0, 0, 0, 0.1);
+                    -moz-box-shadow: 0px 0px 39px 0px rgba(0, 0, 0, 0.1);
+                }
+            </style>
+            <img src="https://gsroleplay.com/static/payments/{{ payment['id'] }}.png" class="img-fluid" alt="Comprobante">
+
+            {% if payment['state'] != 2 %}
+            <h4 class="fw-bold mt-3">Gestionar</h4>
+            <form method="POST" class="col-md-6">
+                <div class="mb-3">
+                    <label for="formInput1" class="form-label">Código de pago</label>
+                    <input type="text" class="form-control" name="payment_code" id="formInput1" placeholder="Ej. 234567">
+                </div>
+
+                <div class="mb-3">
+                    <label for="formInput2" class="form-label">Estado del pedido</label>
+                    <select class="form-select" aria-label="Default select example" name="state" id="formInput2" required>
+                        <option selected>Seleccione una opción...</option>
+                        <option value="0">Pago pendiente</option>
+                        <option value="1">Revisión pendiente</option>
+                        <option value="2">Acreditado</option>
+                        <option value="3">Rechazado</option>
+                        <option value="4">Duplicado</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Guardar y actualizar</button>
+            </form>
+
+            <div class="alert alert-primary mt-5" role="alert"><i class="fa-solid fa-circle-info"></i> <b>información:</b> El código de pago es solo para métodos como Pago Fácil y Rapipago, de lo contrario deja el espacio vacío. Si selecciona "Acreditado" en la lista de opciones, el producto se acreditará en la cuenta del usuario automáticamente.</div>
+            {% else %}
+                {% if session['id'] == 81045 %}
+                <h4 class="fw-bold mt-3">Editar estado</h4>
+                <form method="POST" class="col-md-6">
+                    <div class="mb-3">
+                        <label for="formInput1" class="form-label">Código de pago</label>
+                        <input type="text" class="form-control" name="payment_code" id="formInput1" placeholder="Ej. 234567">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="formInput2" class="form-label">Estado del pedido</label>
+                        <select class="form-select" aria-label="Default select example" name="state" id="formInput2" required>
+                            <option selected>Seleccione una opción...</option>
+                            <option value="0">Pago pendiente</option>
+                            <option value="1">Revisión pendiente</option>
+                            <option value="2">Acreditado</option>
+                            <option value="3">Rechazado</option>
+                            <option value="4">Duplicado</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Guardar y actualizar</button>
+                </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+</body>
+
+</html>

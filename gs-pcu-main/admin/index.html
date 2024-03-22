@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Panel administrativo", "Panel administrativo") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="p-5">
+            <div class="row d-flex justify-content-center">
+
+                <div class="card admin-card" style="width: 25%;" onclick="window.location = `{{ url_for('admin.search_user') }}`">
+                    <i class="card-icon fa-solid fa-user"></i>
+
+                    <p class="text-center vehicle-name">
+                        Buscar usuario
+                        <br>
+                        <span class="vehicle-enrollment">Encuentra cualquier usuario</span>
+                    </p>
+                </div>
+
+                <div class="card admin-card" style="width: 25%;" onclick="window.location = `{{ url_for('admin.unban_user') }}`">
+                    <i class="card-icon fa-solid fa-ghost"></i>
+
+                    <p class="text-center vehicle-name">
+                        Desbanear
+                        <br>
+                        <span class="vehicle-enrollment">Desbanear a un usuario/IP</span>
+                    </p>
+                </div>
+
+                <div class="card admin-card" style="width: 25%;" onclick="window.location = `{{ url_for('admin.receipts_list') }}`">
+                    <i class="card-icon fa-solid fa-cash-register"></i>
+
+                    <p class="text-center vehicle-name">
+                        Comprobantes
+                        <br>
+                        <span class="vehicle-enrollment">Gestionar la platitaaa</span>
+                    </p>
+                </div>
+
+                <div class="card admin-card" style="width: 25%;" onclick="window.location = '#'">
+                    <i class="card-icon fa-solid fa-ban"></i>
+
+                    <p class="text-center vehicle-name">
+                        Banear
+                        <br>
+                        <span class="vehicle-enrollment">Banear usuario/IP</span>
+                    </p>
+                </div>
+
+                <div class="card admin-card" style="width: 25%;" onclick="window.location = `{{ url_for('admin.usernames_historial') }}`">
+                    <i class="card-icon fa-solid fa-clipboard-list"></i>
+
+                    <p class="text-center vehicle-name">
+                        Nombres
+                        <br>
+                        <span class="vehicle-enrollment">Ver registro de nombres</span>
+                    </p>
+                </div>
+
+                <div class="card admin-card" style="width: 25%;" onclick="window.location = `{{ url_for('admin.search_gang') }}`">
+                    <i class="card-icon fa-solid fa-dog"></i>
+
+                    <p class="text-center vehicle-name">
+                        Bandas
+                        <br>
+                        <span class="vehicle-enrollment">Buscar grupos de subseres</span>
+                    </p>
+                </div>
+
+                <div class="card admin-card" style="width: 25%;" onclick="window.location = '#'">
+                    <i class="card-icon fa-solid fa-poo"></i>
+
+                    <p class="text-center vehicle-name">
+                        Staff
+                        <br>
+                        <span class="vehicle-enrollment">Gestionar a los mogolicos</span>
+                    </p>
+                </div>
+
+                <div class="card admin-card" style="width: 25%;" onclick="window.location = `{{ url_for('admin.registry') }}`">
+                    <i class="card-icon fa-solid fa-box-archive"></i>
+
+                    <p class="text-center vehicle-name">
+                        Registro
+                        <br>
+                        <span class="vehicle-enrollment">Todas las acciones administrativas</span>
+                    </p>
+                </div>
+
+                <div class="card admin-card" style="width: 25%;" onclick="window.location = `{{ url_for('admin.reset_password') }}`">
+                    <i class="card-icon fa-solid fa-key"></i>
+
+                    <p class="text-center vehicle-name">
+                        Restablecer contraseña
+                        <br>
+                        <span class="vehicle-enrollment">Restablecer la contraseña de un usuario</span>
+                    </p>
+                </div>
+
+                <!-- <div class="card admin-card" style="width: 25%;" onclick="window.location = `{{ url_for('admin.coins_list') }}`">
+                    <i class="card-icon fa-solid fa-coins"></i>
+
+                    <p class="text-center vehicle-name">
+                        Monedas
+                        <br>
+                        <span class="vehicle-enrollment">Gestionar la moneda del servidor</span>
+                    </p>
+                </div> -->
+
+                <div class="card admin-card" style="width: 25%;" onclick="window.location = `{{ url_for('admin.give_coins') }}`">
+                    <i class="card-icon fa-solid fa-sack-dollar"></i>
+
+                    <p class="text-center vehicle-name">
+                        Dar monedas
+                        <br>
+                        <span class="vehicle-enrollment">Dar monedas desde las reservas</span>
+                    </p>
+                </div>
+
+                <div class="card admin-card" style="width: 25%;" onclick="window.location = `{{ url_for('admin.gift_codes') }}`">
+                    <i class="card-icon fa-solid fa-gifts"></i>
+
+                    <p class="text-center vehicle-name">
+                        Regalos
+                        <br>
+                        <span class="vehicle-enrollment">Gestionar códigos de regalo</span>
+                    </p>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+</body>
+
+</html>

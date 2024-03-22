@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Estado de tu pedido", "Gestiona todos tus comprobantes de pago.") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="p-5">
+            <h1 class="mt-3 mb-3 text-center">Estado del pedido</h1>
+            <p class="col-xs-1 fs-6 text-center">Estado del pedido <code class="font-code">#{{ payment['id'] }}</code> de "{{ payment['name'] }}" para "{{ payment['country'] }}" usando {{ payment['method'] }}.</p>
+
+            <div class="row d-flex justify-content-center mb-5">
+                <div class="col-12 col-md-10">
+                    <div class="row justify-content-between">
+                        <div class="order-tracking completed">
+                            <span class="is-complete"></span>
+                            <p>Pedido pagado</p>
+                        </div>
+
+                        {% if payment['state'] == 1 %}
+                        <div class="order-tracking">
+                            <span class="is-complete"></span>
+                            <p>Revisando recibo</p>
+                        </div>
+
+                        <div class="order-tracking">
+                            <span class="is-complete"></span>
+                            <p>Compra acreditada</p>
+                        </div>
+                        {% endif %}
+
+                        {% if payment['state'] == 2 %}
+                        <div class="order-tracking completed">
+                            <span class="is-complete"></span>
+                            <p>Revisando recibo</p>
+                        </div>
+
+                        <div class="order-tracking completed">
+                            <span class="is-complete"></span>
+                            <p>Compra acreditada</p>
+                        </div>
+                        {% endif %}
+
+                        {% if payment['state'] == 3 %}
+                        <div class="order-tracking completed">
+                            <span class="is-complete"></span>
+                            <p>Revisando recibo</p>
+                        </div>
+
+                        <div class="order-tracking completed denied">
+                            <span class="is-complete"></span>
+                            <p>Compra rechazada</p>
+                        </div>
+                        {% endif %}
+
+
+                    </div>
+                </div>
+            </div>
+
+            {% if payment['state'] == 0 %}
+            <div class="alert alert-primary" role="alert"><i class="fa-solid fa-circle-info"></i> <b>información:</b> Abone el pago para continuar...</div>
+            {% endif %}
+
+            {% if payment['state'] == 1 %}
+            <div class="alert alert-primary" role="alert"><i class="fa-solid fa-circle-info"></i> <b>información:</b> Estamos revisando la validez del recibo y del pago, este proceso puede demorar entre 12 a 24 horas, una vez completado tendrás acreditada tu compra.</div>
+            {% endif %}
+
+            {% if payment['state'] == 2 %}
+            <div class="alert alert-success" role="alert"><i class="fa-solid fa-circle-check"></i> <b>Compra acreditada:</b> ¡Felicidades! Su compra ha sido acreditada con éxito.</div>
+            {% endif %}
+
+            {% if payment['state'] == 3 %}
+            <div class="alert alert-danger" role="alert"><i class="fa-solid fa-bug"></i> <b>Rechazado:</b> Su pedido fue rechazado, cree un ticket de discord o una publicación en el foro para averiguar los motivos.</div>
+            {% endif %}
+
+            {% if payment['state'] == 4 %}
+            <div class="alert alert-primary" role="alert"><i class="fa-solid fa-circle-info"></i> <b>Duplicado:</b> Parece que ya ha creado un pedido similar antes, contacte con el soporte en caso de que sea un error.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+</body>
+
+</html>

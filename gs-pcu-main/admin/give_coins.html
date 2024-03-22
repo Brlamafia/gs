@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% from '/components/header.html' import generateHeader, javascriptBundle, generateFooter with context %}
+    {{ generateHeader("Golden State - Dar monedas", "Panel administrativo") }}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="main-background">
+        {% from '/components/navbar.html' import generateNavbar with context %}
+        {{ generateNavbar() }}
+
+        <div class="p-5">
+            <div class="text-left back-container">
+                <p class="back-text">< Volver a <a class="back-link" href="{{ url_for('admin.index') }}">Panel administrativo</a></p>
+            </div>
+
+            {% if error %}
+                <div class="alert alert-danger" role="alert"><i class="fa-solid fa-bug"></i> {{ error }}</div>
+            {% endif %}
+
+            {% if success %}
+                <div class="alert alert-success" role="alert"><i class="fa-solid fa-circle-check"></i> {{ success | safe }}</div>
+            {% endif %}
+
+            <form method="post" class="col-md-6">
+                <h4 class="fw-bold">Dar monedas</h4>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                    <input type="text" class="form-control" placeholder="Nombre_Apellido" name="username">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa-solid fa-coins"></i></span>
+                    <input type="text" class="form-control" placeholder="Cantidad" name="coins">
+                </div>
+
+                <button class="btn btn-lg btn-primary" type="submit">Enviar monedas</button>
+            </form>
+
+        </div>
+    </div>
+
+    {{ generateFooter() }}
+    {{ javascriptBundle() }}
+</body>
+
+</html>
